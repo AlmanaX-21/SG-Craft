@@ -1,0 +1,6 @@
+package gcewing.sg;
+
+public class IrisRenderer extends BaseEntityRenderer<IrisEntity> {
+   public void renderEntity(IrisEntity entity, double x, double y, double z, float yaw, float dt) {
+   }
+}
