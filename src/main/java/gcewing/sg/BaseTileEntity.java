@@ -222,7 +222,7 @@ public abstract class BaseTileEntity extends TileEntity implements BaseMod.ITile
    }
 
    static {
-      getOrCreateChunkWatcher = BaseUtils.getMethodDef(PlayerManager.class, "getOrCreateChunkWatcher", "getOrCreateChunkWatcher", Integer.TYPE, Integer.TYPE, Boolean.TYPE);
-      flagsYAreasToUpdate = BaseUtils.getFieldDef(BaseUtils.classForName("net.minecraft.server.management.PlayerManager$PlayerInstance"), "flagsYAreasToUpdate", "flagsYAreasToUpdate");
+      getOrCreateChunkWatcher = BaseUtils.getMethodDef(PlayerManager.class, "getOrCreateChunkWatcher", "func_72690_a", Integer.TYPE, Integer.TYPE, Boolean.TYPE);
+      flagsYAreasToUpdate = BaseUtils.getFieldDef(BaseUtils.classForName("net.minecraft.server.management.PlayerManager$PlayerInstance"), "flagsYAreasToUpdate", "field_73260_f");
    }
 }

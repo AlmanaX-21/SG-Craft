@@ -6,7 +6,7 @@ import net.minecraftforge.event.terraingen.InitMapGenEvent;
 
 public class FeatureGeneration {
    public static boolean augmentStructures = false;
-   static Field structureMap = BaseUtils.getFieldDef(MapGenStructure.class, "structureMap", "structureMap");
+   static Field structureMap = BaseUtils.getFieldDef(MapGenStructure.class, "structureMap", "field_75053_d");
 
    public static void configure(BaseConfiguration config) {
       augmentStructures = config.getBoolean("options", "augmentStructures", augmentStructures);
