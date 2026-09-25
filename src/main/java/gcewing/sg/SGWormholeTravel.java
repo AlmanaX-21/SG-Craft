@@ -8,13 +8,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class SGWormholeTravel {
+   static final int TICKS = 87;
    static boolean enabled = true;
    private static final Map<UUID, Transit> active = new HashMap<UUID, Transit>();
 
    static void begin(EntityPlayerMP player) {
       if (enabled && !active.containsKey(player.getUniqueID())) {
          active.put(player.getUniqueID(), new Transit(player));
-         SGChannel.sendWormholeStart(player, 50);
+         SGChannel.sendWormholeStart(player, TICKS);
       }
    }
 
@@ -52,7 +53,7 @@ public class SGWormholeTravel {
       final double x;
       final double y;
       final double z;
-      int ticks = 50;
+      int ticks = TICKS;
 
       Transit(EntityPlayerMP player) {
          this.player = player;

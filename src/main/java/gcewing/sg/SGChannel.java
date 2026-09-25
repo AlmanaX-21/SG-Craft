@@ -202,7 +202,7 @@ public class SGChannel extends BaseDataChannel {
    @BaseDataChannel.ClientMessageHandler("WormholeStart")
    public void receiveWormholeStart(BaseDataChannel.ChannelInput data) {
       int ticks = data.readInt();
-      if (ticks > 0 && ticks <= 60) {
+      if (ticks > 0 && ticks <= SGWormholeTravel.TICKS) {
          wormholeStarts.add(ticks);
       }
    }

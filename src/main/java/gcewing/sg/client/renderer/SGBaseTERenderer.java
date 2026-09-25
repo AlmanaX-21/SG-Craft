@@ -685,20 +685,21 @@ public class SGBaseTERenderer extends BaseTileEntityRenderer {
    private void drawEHQuad(float i, float j, float z1, float z2, float z3, float z4, float size, float uOffset, float vOffset) {
       Tessellator t = Tessellator.instance;
       t.startDrawingQuads();
-      this.addEHVertex(t, i * 0.5F - 2.25F, j * 0.5F - 2.25F, z1, i / size / 14.0F + uOffset, j / size / 14.0F + vOffset);
-      this.addEHVertex(t, i * 0.5F - 2.25F, (j + 1.0F) * 0.5F - 2.25F, z2, i / size / 14.0F + uOffset, (j + 1.0F) / size / 14.0F + vOffset);
-      this.addEHVertex(t, (i + 1.0F) * 0.5F - 2.25F, (j + 1.0F) * 0.5F - 2.25F, z3, (i + 1.0F) / size / 14.0F + uOffset, (j + 1.0F) / size / 14.0F + vOffset);
-      this.addEHVertex(t, (i + 1.0F) * 0.5F - 2.25F, j * 0.5F - 2.25F, z4, (i + 1.0F) / size / 14.0F + uOffset, j / size / 14.0F + vOffset);
+      this.addEHVertex(t, i * 0.5F - 2.25F, j * 0.5F - 2.25F, z1, size, uOffset, vOffset);
+      this.addEHVertex(t, i * 0.5F - 2.25F, (j + 1.0F) * 0.5F - 2.25F, z2, size, uOffset, vOffset);
+      this.addEHVertex(t, (i + 1.0F) * 0.5F - 2.25F, (j + 1.0F) * 0.5F - 2.25F, z3, size, uOffset, vOffset);
+      this.addEHVertex(t, (i + 1.0F) * 0.5F - 2.25F, j * 0.5F - 2.25F, z4, size, uOffset, vOffset);
       t.draw();
    }
 
-   private void addEHVertex(Tessellator t, float x, float y, float z, float u, float v) {
+   private void addEHVertex(Tessellator t, float x, float y, float z, float size, float uOffset, float vOffset) {
       double radius = Math.sqrt(x * x + y * y);
       if (radius > 2.0) {
          x *= 2.0 / radius;
          y *= 2.0 / radius;
       }
-      t.addVertexWithUV(x, y, z, u, v);
+      // UV follows clamped position
+      t.addVertexWithUV(x, y, z, (x + 2.25F) * 2.0F / size / 14.0F + uOffset, (y + 2.25F) * 2.0F / size / 14.0F + vOffset);
    }
 
    protected void detectIrisHit(SGBaseTE te, double t, float time) {

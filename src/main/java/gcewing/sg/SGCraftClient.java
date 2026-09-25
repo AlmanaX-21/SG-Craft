@@ -6,6 +6,7 @@ import gcewing.sg.client.renderer.RemoteDialerRenderer;
 import gcewing.sg.client.renderer.RingBaseRenderer;
 import gcewing.sg.client.renderer.RingControllerTESR;
 import gcewing.sg.client.renderer.SGBaseTERenderer;
+import gcewing.sg.client.renderer.WormholeVideo;
 import gcewing.sg.gui.DHDFuelScreen;
 import gcewing.sg.gui.DHDScreen;
 import gcewing.sg.gui.SGRemoteDialerScreen;
@@ -21,6 +22,7 @@ import org.lwjgl.opengl.GL11;
 
 public class SGCraftClient extends BaseModClient<SGCraft> {
    private int wormholeTicks;
+   private WormholeVideo video;
    public SGCraftClient(SGCraft mod) {
       super(mod);
    }
@@ -58,41 +60,50 @@ public class SGCraftClient extends BaseModClient<SGCraft> {
    @SubscribeEvent
    public void onClientTick(TickEvent.ClientTickEvent event) {
       if (event.phase == TickEvent.Phase.END) {
+         if (wormholeTicks > 0) {
+            wormholeTicks--;
+         }
          Integer start;
          while ((start = SGChannel.pollWormholeStart()) != null) {
+            if (video != null) {
+               video.stop();
+            }
             wormholeTicks = start;
+            video = start > 0 ? WormholeVideo.play() : null;
          }
          if (Minecraft.getMinecraft().thePlayer == null) {
             wormholeTicks = 0;
-         } else if (wormholeTicks > 0) {
-            wormholeTicks--;
+         }
+         if (wormholeTicks == 0 && video != null) {
+            video.stop();
+            video = null;
          }
       }
    }
 
    @SubscribeEvent
    public void onWormholeOverlay(RenderGameOverlayEvent.Post event) {
-      if (event.type != RenderGameOverlayEvent.ElementType.ALL || wormholeTicks <= 0) {
+      if (event.type != RenderGameOverlayEvent.ElementType.ALL || video == null) {
+         return;
+      }
+      if (!video.bind((SGWormholeTravel.TICKS - wormholeTicks + event.partialTicks) / 20.0)) {
          return;
       }
       int width = event.resolution.getScaledWidth();
       int height = event.resolution.getScaledHeight();
-      float progress = (50.0F - wormholeTicks) / 50.0F;
-      float crop = 0.5F / (1.0F + progress * 1.5F);
       float opacity = Math.min(1.0F, wormholeTicks / 6.0F);
       GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
       GL11.glDisable(GL11.GL_DEPTH_TEST);
       GL11.glDepthMask(false);
       GL11.glEnable(GL11.GL_BLEND);
       GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-      Minecraft.getMinecraft().renderEngine.bindTexture(base.resourceLocation("textures/gui/wormhole_tunnel.png"));
       Tessellator draw = Tessellator.instance;
       draw.startDrawingQuads();
       draw.setColorRGBA_F(1.0F, 1.0F, 1.0F, opacity);
-      draw.addVertexWithUV(0, height, -90, 0.5F - crop, 0.5F + crop);
-      draw.addVertexWithUV(width, height, -90, 0.5F + crop, 0.5F + crop);
-      draw.addVertexWithUV(width, 0, -90, 0.5F + crop, 0.5F - crop);
-      draw.addVertexWithUV(0, 0, -90, 0.5F - crop, 0.5F - crop);
+      draw.addVertexWithUV(0, height, -90, 0, 1);
+      draw.addVertexWithUV(width, height, -90, 1, 1);
+      draw.addVertexWithUV(width, 0, -90, 1, 0);
+      draw.addVertexWithUV(0, 0, -90, 0, 0);
       draw.draw();
       GL11.glPopAttrib();
    }
